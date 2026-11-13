@@ -1,0 +1,48 @@
+/* Estilos generales de Kiosco Smart */
+:root {
+  --primary-color: #0d6efd;
+  --secondary-color: #6c757d;
+  --bg-light: #f8f9fa;
+}
+
+body {
+  background-color: var(--bg-light);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Tarjetas y Contenedores */
+.card {
+  border-radius: 10px;
+  border: none;
+}
+
+.table th {
+  background-color: #eef2f7;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Modales y Paneles */
+.modal-header {
+  border-bottom: 2px solid #f1f1f1;
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.4em 0.7em;
+}
+
+/* Transición entre vistas de Login y Dashboard */
+.view-screen {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Animación en botones */
+.btn, .form-control {
+  transition: all 0.2s ease-in-out;
+}

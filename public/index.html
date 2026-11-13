@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiosco Smart - Sistema de Inventario</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Íconos -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Estilos Propios -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- PANTALLA 1: SISTEMA DE LOGIN Y ACCESO POR ROLES -->
+  <div id="screen-login" class="container py-5 view-screen">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg">
+          <div class="card-header bg-primary text-white text-center py-3">
+            <h3 class="fw-bold mb-0"><i class="fa-solid fa-store me-2"></i>Kiosco Smart</h3>
+            <p class="small mb-0 opacity-75">Selecciona tu tipo de usuario para ingresar</p>
+          </div>
+          <div class="card-body p-4">
+            <!-- Pestañas de Selección de Rol -->
+            <ul class="nav nav-pills nav-justified mb-4" id="loginTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-bold" id="jefe-tab" data-bs-toggle="pill" data-bs-target="#tab-jefe" type="button">Jefe</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="empleado-tab" data-bs-toggle="pill" data-bs-target="#tab-empleado" type="button">Empleado</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="proveedor-tab" data-bs-toggle="pill" data-bs-target="#tab-proveedor" type="button">Proveedor</button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="loginTabContent">
+              <!-- Formulario 1: Jefe -->
+              <div class="tab-pane fade show active" id="tab-jefe">
+                <form id="form-login-jefe">
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Correo Electrónico</label>
+                    <input type="email" id="jefe-email" class="form-control" value="jefe@kiosco.com" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Contraseña</label>
+                    <input type="password" id="jefe-pass" class="form-control" value="admin123" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100 fw-bold">Ingresar como Jefe</button>
+                </form>
+              </div>
+
+              <!-- Formulario 2: Empleado -->
+              <div class="tab-pane fade" id="tab-empleado">
+                <form id="form-login-empleado">
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Nombre del Empleado</label>
+                    <input type="text" id="emp-nombre" class="form-control" placeholder="Ej. Juan Pérez" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Correo Autorizado o Código de Acceso</label>
+                    <input type="text" id="emp-credencial" class="form-control" placeholder="Ej. juan.empleado@kiosco.com o EMP-8842" required>
+                  </div>
+                  <button type="submit" class="btn btn-success w-100 fw-bold">Ingresar como Empleado</button>
+                </form>
+              </div>
+
+              <!-- Formulario 3: Proveedor -->
+              <div class="tab-pane fade" id="tab-proveedor">
+                <form id="form-login-proveedor">
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Nombre / Empresa Proveedora</label>
+                    <input type="text" id="prov-nombre" class="form-control" placeholder="Ej. Distribuidora Sur" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Correo Autorizado o Código de Acceso</label>
+                    <input type="text" id="prov-credencial" class="form-control" placeholder="Ej. ventas@distsur.com o PRV-1930" required>
+                  </div>
+                  <button type="submit" class="btn btn-warning w-100 fw-bold text-dark">Ingresar como Proveedor</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Alerta de Errores en el Login -->
+            <div id="login-alert" class="alert alert-danger mt-3 d-none" role="alert"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA 2: PANEL PRINCIPAL (DASHBOARD) -->
+  <div id="screen-dashboard" class="view-screen d-none">
+    <!-- Navegación Principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+      <div class="container-fluid px-4">
+        <a class="navbar-brand" href="#"><i class="fa-solid fa-store me-2"></i>Kiosco Smart</a>
+        
+        <div class="d-flex align-items-center gap-3">
+          <!-- Atajo del Programador / Evaluador -->
+          <div class="d-flex align-items-center">
+            <span class="badge bg-light text-dark me-2">Atajo Dev:</span>
+            <select id="select-rol" class="form-select form-select-sm w-auto">
+              <option value="jefe">Jefe</option>
+              <option value="empleado">Empleado</option>
+              <option value="proveedor">Proveedor</option>
+            </select>
+          </div>
+
+          <button id="btn-logout" class="btn btn-outline-light btn-sm fw-bold">
+            <i class="fa-solid fa-right-from-bracket me-1"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid px-4">
+      
+      <!-- PANEL DE GESTIÓN DE USUARIOS AUTORIZADOS (Exclusivo para el Jefe) -->
+      <div id="panel-gestion-usuarios" class="card shadow-sm mb-4 border-primary">
+        <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <span><i class="fa-solid fa-users-gear me-2"></i> Gestión Interna de Accesos (Solo Visible para el Jefe)</span>
+          <div class="small">
+            <span class="badge bg-light text-dark me-1">Cód. Empleado: EMP-8842</span>
+            <span class="badge bg-light text-dark">Cód. Proveedor: PRV-1930</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-3">Registra aquí los correos electrónicos de tus empleados y proveedores para que puedan ingresar directamente al sistema sin compartir códigos externos.</p>
+          <form id="form-nuevo-usuario" class="row g-3 mb-4">
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Tipo de Usuario</label>
+              <select id="nuevo-tipo-rol" class="form-select">
+                <option value="empleado">Empleado</option>
+                <option value="proveedor">Proveedor</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Nombre o Empresa</label>
+              <input type="text" id="nuevo-nombre" class="form-control" placeholder="Ej. Carlos Pérez" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Correo Electrónico</label>
+              <input type="email" id="nuevo-correo" class="form-control" placeholder="carlos@kiosco.com" required>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+              <button type="submit" class="btn btn-success w-100 fw-bold" title="Autorizar Usuario">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </form>
+          
+          <h6 class="fw-bold text-secondary mb-2">Personal y Proveedores Autorizados en el Sistema:</h6>
+          <div id="lista-usuarios-autorizados" class="border rounded p-2 bg-light">
+            <!-- Se llena dinámicamente desde main.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Banner de Permisos de Rol -->
+      <div id="rol-banner" class="alert alert-info d-flex align-items-center justify-content-between shadow-sm" role="alert">
+        <div>
+          <i class="fa-solid fa-user-shield me-2 fs-5"></i>
+          <span id="rol-descripcion">Modo Jefe: Tienes control total y administración de usuarios.</span>
+        </div>
+        <button id="btn-nuevo-producto" class="btn btn-success fw-bold" data-bs-toggle="modal" data-bs-target="#modalProducto">
+          <i class="fa-solid fa-plus me-1"></i> Añadir Producto
+        </button>
+      </div>
+
+      <!-- Tabla de Control de Inventario -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold text-secondary"><i class="fa-solid fa-boxes-stacked me-2"></i>Control de Inventario</h5>
+          <span class="badge bg-primary fs-6" id="total-productos">0 Productos</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Producto</th>
+                  <th>Cant. Actual</th>
+                  <th>Cant. a Tener</th>
+                  <th>Precio Venta</th>
+                  <th>¿Se solicita más?</th>
+                  <th>Cuántos pedir</th>
+                  <th class="text-center col-acciones">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-productos">
+                <!-- Se renderiza desde JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial de Auditoría (Exclusivo para el Jefe) -->
+      <div id="seccion-historial" class="card shadow-sm mt-4 mb-5">
+        <div class="card-header bg-dark text-white fw-bold py-2">
+          <i class="fa-solid fa-list-check me-2"></i> Registro de Movimientos del Sistema (Auditoría de Jefe)
+        </div>
+        <div class="card-body p-2">
+          <ul id="lista-historial" class="list-group list-group-flush small">
+            <!-- Movimientos dinámicos desde JS -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AGREGAR / EDITAR PRODUCTO -->
+  <div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="modalProductoLabel">Añadir Nuevo Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="form-producto">
+          <div class="modal-body">
+            <input type="hidden" id="producto-id">
+            <div class="mb-3">
+              <label for="prod-nombre" class="form-label fw-semibold">Nombre del Producto</label>
+              <input type="text" class="form-control" id="prod-nombre" required placeholder="Ej. Alfajor Triple">
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="prod-actual" class="form-label fw-semibold">Cantidad Actual</label>
+                <input type="number" class="form-control" id="prod-actual" min="0" required placeholder="0">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="prod-objetivo" class="form-label fw-semibold">Cantidad a Tener</label>
+                <input type="number" class="form-control" id="prod-objetivo" min="1" required placeholder="10">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="prod-precio" class="form-label fw-semibold">Precio de Venta ($)</label>
+              <input type="number" class="form-control" id="prod-precio" step="0.01" min="0" required placeholder="500.00">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary fw-bold" id="btn-guardar">Guardar Producto</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Librería de Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Lógica en JavaScript -->
+  <script src="js/main.js"></script>
+</body>
+</html>

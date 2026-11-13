@@ -1,0 +1,3 @@
+Título del proyecto: Kiosco Smart.
+Integrantes del grupo: jeremias robador perez .
+Descripción del sistema: buno el sistema se basa en en un pagina en la cual el jefe de un egocio puede añadir asus provedores y su emplead para fasilitar todo lo que sea nesesario en el negocio o cometcio solisitado el jefe puede añadir y quitar gente el empleado añade los productosa faltantes y el provedor observa lo solisitdi
